@@ -193,3 +193,25 @@ pcolor(T_mesh, X_mesh, abs(u_eks - u_df)); shading interp;
 xlabel('t (s)'); ylabel('x (m)');
 title('|Eksplisit - Dufort-F.|');
 colorbar;
+% ====== ERROR RELATIF ======
+figure(5);
+
+err_eks = zeros(1,Nt);
+err_df  = zeros(1,Nt);
+
+for n = 1:Nt
+    ref = norm(u_imp(:,n));
+    if ref > 1e-14
+        err_eks(n) = norm(u_imp(:,n) - u_eks(:,n)) / ref;
+        err_df(n)  = norm(u_imp(:,n) - u_df(:,n))  / ref;
+    end
+end
+
+semilogy(t, err_eks+1e-16, 'r-',  'LineWidth', 0.8); hold on;
+semilogy(t, err_df+1e-16,  'g--', 'LineWidth', 0.8);
+xlabel('t (s)');
+ylabel('Error Relatif');
+title('Error Relatif vs Waktu (Referensi: Implisit BTCS)');
+legend('Eksplisit vs Implisit', 'Dufort-F. vs Implisit', ...
+       'Location','northeast');
+grid on;
